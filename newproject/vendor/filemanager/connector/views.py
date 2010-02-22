@@ -31,39 +31,49 @@ absolute_path = os.path.abspath
 split_path = os.path.split
 split_ext = os.path.splitext
 
+base_dir = '/static/upload/'
+
 def dirlist(request):
     r=['<ul class="jqueryFileTree" style="display: none;">']
+    d = request.POST.get('dir', base_dir)    
     try:
         r=['<ul class="jqueryFileTree" style="display: none;">']
-        d=urllib.unquote(request.POST.get('dir', PROJECT_DIR + '/static/upload/'))
-        for f in os.listdir(d):
-            ff=os.path.join(d,f)
+        for f in os.listdir(PROJECT_DIR + d):
+            ff=os.path.join((PROJECT_DIR + d),f)
+
             if os.path.isdir(ff):
                 if f != ".svn" and f != ".DS_Store":
-                    r.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (ff,f))
+                    r.append('<li class="directory collapsed"><a href="#" rel="%s/">%s</a></li>' % (d+f,f))
             else:
                 if f != ".svn" and f != ".DS_Store": 
                     e=os.path.splitext(f)[1][1:] # get .ext and remove dot
-                    r.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (e,ff,f))
+                    r.append('<li class="file ext_%s"><a href="#" rel="%s">%s</a></li>' % (e,(d+f),f))
+
         r.append('</ul>')
     except Exception,e:
-        r.append('Could not load directory: %s' % str(e))
+        type, value, tb = sys.exc_info()
+        print >> sys.stderr,  type.__name__, ":", value
+        print >> sys.stderr, '\n'.join(traceback.format_tb(tb))
+        r.append('Could not load directory: %s %s' % (d, traceback.format_tb(tb)))
     r.append('</ul>')
 
-    request.session["upload_path"] = PROJECT_DIR + '/static/upload/'
+    request.session["upload_path"] = d
     print request.session["upload_path"]
 
     return HttpResponse(''.join(r))
 
+
+
+
 def getInfo(request, request_path):
-    path = PROJECT_DIR + '/' + request_path
-    preview = '../../../' + request_path
+    path = PROJECT_DIR + request_path
+    preview = request_path
     imagetypes = ['.gif','.jpg','.jpeg','.png',]
-    if os.path.isdir(PROJECT_DIR + '/' + request_path):
+    if os.path.isdir(path):
         thefile = {
-            'Path' : request_path,
+            'Path' : request_path + "/",
             'Filename' : split_path(path)[-1],
-            'File Type' : split_path(path)[1][1:],
+            'File Type' : split_path(path)[1],
             'Preview' : 'images/fileicons/_Open.png',
             'Properties' : {
                     'Date Created' : '',
@@ -72,14 +82,14 @@ def getInfo(request, request_path):
                     'Height' : '',
                     'Size' : ''
                 },
-            'Return' : request_path[1:],
+            'Return' : request_path,
             'Error' : '',
             'Code' : 0,
             }        
         thefile['File Type'] = 'Directory'
     else:
         ext = split_ext(path)
-        preview = '/static/js/filemanager/images/fileicons/'+ ext[1][1:] + '.png'
+        preview = 'images/fileicons/'+ ext[1][1:] + '.png'
         thefile = {
             'Path' : request_path,
             'Filename' : split_path(path)[-1],
@@ -92,7 +102,7 @@ def getInfo(request, request_path):
                     'Height' : '',
                     'Size' : ''
                 },
-            'Return' : request_path[1:],
+            'Return' : request_path,
             'Error' : '',
             'Code' : 0,
             }        
@@ -102,9 +112,9 @@ def getInfo(request, request_path):
                 xsize, ysize = img.size
                 thefile['Properties']['Width'] = xsize
                 thefile['Properties']['Height'] = ysize
-                thefile['Preview'] = request_path[1:]
+                thefile['Preview'] = "../../.." + request_path
             except:
-                preview = '/static/js/filemanager/images/fileicons/'+ ext[1][1:] + '.png'
+                preview = 'images/fileicons/'+ ext[1][1:] + '.png'
                 thefile['Preview'] = preview
 
         thefile['File Type'] = os.path.splitext(path)[1][1:]
@@ -116,14 +126,14 @@ def getInfo(request, request_path):
 
 
 def handle_uploaded_file(request, f):
-    upload_path = request.session.get("upload_path", PROJECT_DIR + '/static/upload/')
-    destination = open((upload_path + f.name), 'wb+')
+    upload_path = request.session.get("upload_path", '/static/upload/')
+    destination = open((PROJECT_DIR + upload_path + f.name), 'wb+')
     for chunk in f.chunks():
         destination.write(chunk)
     destination.close()
     result = {
         'Name' : f.name,
-        'Path' : upload_path.replace(PROJECT_DIR, "."),
+        'Path' : upload_path,
         'Code' : "0",
         'Error' : ""
     }
@@ -146,21 +156,20 @@ def handler(request):
 
         if request.GET["mode"] == "getfolder":
             result = []
-            d=urllib.unquote(PROJECT_DIR + '/' + request.GET["path"])
-            request.session["upload_path"] = PROJECT_DIR + request.GET["path"][1:]
-            print request.session["upload_path"]
+            d=urllib.unquote(PROJECT_DIR + request.GET["path"])
+            request.session["upload_path"] = request.GET["path"]
             result += " { "
             for i, filename in enumerate(os.listdir(d)):
                 if filename != ".svn" and filename != ".DS_Store":
-                    result += '"' + request.GET["path"][1:] + filename + '" : '
+                    result += '"' + request.GET["path"] + filename + '" : '
                     result += getInfo(request,request.GET["path"] + filename)
                     if i < (len(os.listdir(d)) - 1):
-                        result += " , "
+                        result += " , "                        
             result += " } "
             return HttpResponse(result)
     
         if request.GET["mode"] == "rename":
-            old = PROJECT_DIR + request.GET["old"][1:]
+            old = PROJECT_DIR + request.GET["old"] 
             path = split_path(old)[0]
 
             oldname = split_path(old)[-1]
@@ -171,9 +180,11 @@ def handler(request):
             newname = request.GET["new"]
             newpath = path + '/' + newname
 
+            print newpath
+
             try:
-                print "old:" + old
-                print "newpath:" + newpath
+                print "old:" + split_path(old)[0].replace(PROJECT_DIR, "")
+                print "newpath:" + split_path(newpath)[0].replace(PROJECT_DIR, "")	
                 os.rename(old, newpath)
                 error_message = newname
                 success_code = "0"
@@ -188,9 +199,9 @@ def handler(request):
                 newpath += '/'
             
             result = {
-                'Old Path' : old.replace(PROJECT_DIR, "."),
+                'Old Path' : split_path(old)[0].replace(PROJECT_DIR, "") + "/",
                 'Old Name' : oldname,
-                'New Path' : (newpath + "/").replace(PROJECT_DIR, "."),
+                'New Path' : split_path(newpath)[0].replace(PROJECT_DIR, "") + "/",
                 'New Name' : newname,
                 'Error' : error_message,
                 'Code' : success_code
@@ -199,7 +210,7 @@ def handler(request):
             return HttpResponse(encode_json(result))
 
         if request.GET["mode"] == "delete":
-            fullpath = PROJECT_DIR + request.GET["path"][1:]
+            fullpath = PROJECT_DIR + request.GET["path"]
             if os.path.isdir(fullpath+"/"):
                 if not fullpath[-1]=='/':
                     fullpath += '/'                
@@ -215,7 +226,7 @@ def handler(request):
                 success_code = "500"
             
             result = {
-                'Path' : request.GET["path"],
+                'Path' : fullpath.replace(PROJECT_DIR, ""),
                 'Name' : name,
                 'Error' : error_message,
                 'Code' : success_code
@@ -224,7 +235,7 @@ def handler(request):
 
 
         if request.GET["mode"] == "addfolder":
-            path = PROJECT_DIR + request.GET["path"][1:]
+            path = PROJECT_DIR + request.GET["path"]
             newName = request.GET["name"].replace(" ", "_")
 
             newPath = path + newName + "/"
@@ -243,8 +254,8 @@ def handler(request):
                 error_message = 'There is no Root Directory.'
 
             result = {
-                'Path' : path,
-                'Parent' : request.GET["path"] + "/",
+                'Path' : request.GET["path"],
+                'Parent' : request.GET["path"],
                 'Name' : newName,
                 'New Path' : newPath,
                 'Error' : error_message,
@@ -254,7 +265,7 @@ def handler(request):
             
     
         if request.GET["mode"] == "download":
-            abspath = PROJECT_DIR + request.GET["path"][1:]
+            abspath = PROJECT_DIR + request.GET["path"]
             wrapper = FileWrapper(file(abspath))
             response = HttpResponse(wrapper)
             response['Content-Length'] = os.path.getsize(abspath)
