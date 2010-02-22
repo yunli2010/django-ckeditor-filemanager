@@ -1,0 +1,72 @@
+#gSheet{
+	z-index:100;
+	display: none;
+	background-color: #666666;
+	position: absolute;
+	top: 0px;
+	left:0px;
+	width: 100%;
+	cursor: pointer;
+}
+
+#gBox, #giBox{
+	display: none;	
+}
+
+#gBox{
+	z-index:1000;
+	border: 20px solid #efefef;
+	background-color: #ffffff;
+	width: 300px;
+	height: 300px;
+	position: absolute;
+}
+
+#giBox{
+	z-index:1000;
+	border: 20px solid #efefef;
+	background-color: #ffffff;
+	width:456px;
+	height:380px;
+	position: absolute;
+}
+
+
+#gImage{
+	display:block;
+	margin: 10px;
+}
+
+#gCount, #gVideoBox, #loadingmsg{
+	font-size: 10px;
+	font-family: verdana;
+	color: #A42424;
+	vertical-align:center;
+}
+
+#gNext, #gPrevious{
+	font-size: 16px;
+	font-family: arial;
+	vertical-align:center;
+	color: #666;
+	cursor: pointer;
+}
+
+#gClose, #giClose{
+	font-size: 10px;
+	font-family: arial;
+	vertical-align: right;
+	color: #666;
+	cursor: pointer;
+}
+
+.gLine, #iFrame{
+	border: #808080 1px dashed;
+}
+#iFrame{
+	overflow: none;
+}
+
+.viewGallery, .viewVideo{
+	cursor:pointer;
+}

@@ -1,0 +1,10 @@
+<div class="baseWrapper">
+	<table class="baseMenu">
+		<tr>
+			<td><a href="/" {% ifequal view_title 'home' %}class="menuSelected"{% endifequal %}>Home</a></td>
+			<td><a href="/about-us/" {% ifequal view_title 'about-us' %}class="menuSelected"{% endifequal %}>About Us</a></td>
+			<td><a href="/gallery/" {% ifequal view_title 'gallery' %}class="menuSelected"{% endifequal %}>Gallery</a></td>
+			<td><a href="/contact/" {% ifequal view_title 'contact' %}class="menuSelected"{% endifequal %}>Contact</a></td>
+		</tr>
+	</table>
+</div>
