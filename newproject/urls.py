@@ -28,7 +28,7 @@ urlpatterns += patterns('common.views',
 
     url(r'^gallery/$', 'gallery', name="gallery"),
 
-    url(r'^contact-us/$', 'contact', name="contact"),
+    url(r'^contact/$', 'contact', name="contact"),
 
     url(r'^(?P<slug>[a-zA-Z0-9_.-]+)/$', 'page', name="page_item"),
 )
