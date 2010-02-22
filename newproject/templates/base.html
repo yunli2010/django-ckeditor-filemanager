@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+		<title>{{SEO_TITLE}}</title>
+		<meta name="keywords" content="{{SEO_KEYWORDS}}">
+		<meta name="description" content="{{SEO_DESCRIPTION}}">
+		<meta name="extra_metatags" content="{{SEO_METATAGS}}">
+		<meta name="Copyright" content="ProjectName 2009" />
+		<meta name="Distribution" content="Global" />
+		<meta name="Rating" content="General" />
+		<meta name="ROBOTS" content="INDEX,FOLLOW" />
+		<meta name="ROBOTS" content="NOIMAGEINDEX" />
+		
+		<link rel="icon" type="image/ico" href="/favicon.ico">
+
+		<link rel="stylesheet" type="text/css" href="/static/css/reset-fonts-grids.css" />
+		<link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+		{% block css %}{% endblock %}
+
+		{% block extra %}{% endblock %}
+		<script type="text/javascript" src="/static/js/mootools.js"></script>
+		{% block js %}{% endblock %}
+	</head>
+
+	<body>
+		
+		<table width="100%">
+			<tr>
+				<td class="facultyleft">&nbsp;</td>
+				<td width="730px">
+					{% include "header.html" %}
+					{% include "menu.html" %}
+
+					<div class="baseContent">
+						{% block content %} this content should be replaced! {% endblock %}
+					</div>
+
+					{% include "footer.html" %}
+				</td>
+				<td class="facultyright">&nbsp;</td>
+			</tr>
+		</table>
+		<!-- |% include "ga.html" %| --> 
+
+	</body>
+</html>

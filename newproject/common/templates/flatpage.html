@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table id="fader" width="730" height="381">
+	<tr>
+		<td valign="top" height="25"><img src="/static/img/fadetop.png" width="100%" height="25"/></td>
+	</tr>
+	<tr>
+		<td align="center" valign="top">
+			<div class="contentContainer">
+				<h1>{{page.title|safe}}</h1>
+				<p>
+				{{page.content|safe}}
+				</p>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td valign="bottom" height="25"><img src="/static/img/fadebottom.png" width="100%" height="25"/></td>
+	</tr>
+</table>
+{% endblock %}

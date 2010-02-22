@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="contentContainer">
+		<h1 >Flickr Photos of action happening at CompanyName</h1>
+
+		<p style="text-align:center">
+			The following photos are from our Flickr Photostream. <br>
+			Please click on one of the images to view our complete gallery.<br/>
+		</p>
+
+		{% for image in images %}
+			<a target="_blank" href="http://www.flickr.com/photos/companyname/">
+				<img border="0" src="{{image}}"/>
+			</a>
+		{% endfor %}
+	</div>
+{% endblock %}

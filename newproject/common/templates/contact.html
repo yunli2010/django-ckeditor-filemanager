@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block js %}
+	<script src="/static/js/contact.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="contentContainer">
+		{% if success %}
+			<h1>Your Message Was Sent Successfully!</h1>
+
+			<p style="text-align:center">
+				Congratulations, Your Message was successfully sent to the CompanyName Team!<br/>
+				<br/>
+				Thank you for your support!<br/>
+				<br/>
+				CompanyName Team<br/>
+				<br/>
+				<a href="{% url home %}">Go Back</a> to the Home Page
+			</p>
+		{% else %}
+
+			<h1>Contact Us</h1>
+
+
+			<table width="100%">
+				<tr>
+					<td valign="top">
+					<table class="contactForm" align="center">
+						<form action="." method="POST">
+							<tr>
+								 <td colspan="2">
+									<div class="infoplease">
+										Please fill in your message below:
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td width="130px" {% if form.fullname.errors %}class="errorLabel"{%else%}class="label"{% endif %}><strong>* Full Name:</strong></td>
+								<td>{{form.fullname}}</td>
+							</tr>
+							<tr>
+								<td {% if form.email.errors %}class="errorLabel"{%else%}class="label"{% endif %}><strong>* Email Address:</strong></td>
+								<td>{{form.email}}</td>
+							</tr>
+							<tr>
+								<td {% if form.contact_number.errors %}class="errorLabel"{%else%}class="label"{% endif %}><strong>* Contact Number:</strong></td>
+								<td>{{form.contact_number}}</td>
+							</tr>
+							<tr>
+								<td {% if form.comment.errors %}class="errorLabel"{%else%}class="label"{% endif %}><strong>* Comment:</strong></td>
+								<td>{{form.comment}}</td>
+							</tr>
+							<tr>
+								<td colspan="2" align="center">
+									<input type="submit" onclick="return validateContact(true);" value="Send Message">
+								</td>
+							</tr>
+						</form>
+					</table>
+				</td>
+					<td class="contactPeople" width="280px" valign="top">
+						<p style="text-align:justify">
+							{{referencecontent.content|safe}}
+						</p>
+					</td>
+				</tr>
+			</table>
+
+		{% endif %}
+	</div>
+{% endblock %}
