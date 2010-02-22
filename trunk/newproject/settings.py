@@ -7,7 +7,7 @@ PROJECT_DIR = os.path.dirname(__file__)
 # These settings can be over-ridden in settings_local.py
 # -----------------------------------------------------------------------------------------
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_DOMAIN = "newproject.co.za"
