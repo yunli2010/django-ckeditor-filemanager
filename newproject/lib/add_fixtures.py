@@ -9,7 +9,7 @@ sys.path.append('../..')
 # Fire up Django
 from django.core.management import setup_environ
 
-### CHANGE THIS ## from projectname import settings
+from newproject import settings
 
 setup_environ(settings)
 
